@@ -10,26 +10,36 @@ layout="wide"
 st.title("📅 INFORMASI AGENDA KEGIATAN")
 st.subheader("DINAS KESEHATAN KOTA PAREPARE")
 
-uploaded_file = st.file_uploader("Upload File Agenda Excel", type=["xlsx"])
+uploaded_file = st.file_uploader(
+"Upload File Agenda Excel",
+type=["xlsx"]
+)
 
-if uploaded_file:
+if uploaded_file is not None:
+
 df = pd.read_excel(uploaded_file)
 
-st.success("Data agenda berhasil dimuat")
+df["Tanggal"] = pd.to_datetime(df["Tanggal"])
 
 menu = st.sidebar.selectbox(
     "Pilih Menu",
-    ["Agenda Hari Ini", "Agenda Bulan Ini", "Semua Agenda"]
+    [
+        "Agenda Hari Ini",
+        "Agenda Bulan Ini",
+        "Semua Agenda"
+    ]
 )
-
-df["Tanggal"] = pd.to_datetime(df["Tanggal"])
 
 today = pd.Timestamp.today().normalize()
 
 if menu == "Agenda Hari Ini":
-    hasil = df[df["Tanggal"].dt.normalize() == today]
+
+    hasil = df[
+        df["Tanggal"].dt.normalize() == today
+    ]
 
 elif menu == "Agenda Bulan Ini":
+
     hasil = df[
         (df["Tanggal"].dt.month == today.month) &
         (df["Tanggal"].dt.year == today.year)
